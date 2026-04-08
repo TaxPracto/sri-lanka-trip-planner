@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sri Lanka Family Trip Planner — August 2026</title>
+<meta name="description" content="Interactive trip planner for 3 Indian families visiting Sri Lanka in August 2026. Pure vegetarian, kid-friendly destinations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        pri: '#061b0e',
+        priC: '#1b3022',
+        sec: '#984629',
+        secC: '#fd9572',
+        ter: '#735c00',
+        terF: '#ffe088',
+        bg: '#faf9f6',
+        srf: '#f4f3f1',
+        srfH: '#e9e8e5',
+        out: '#c3c8c1',
+        onV: '#434843',
+      },
+      fontFamily: {
+        serif: ['Noto Serif', 'Georgia', 'serif'],
+        sans: ['Manrope', 'system-ui', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Manrope', system-ui, sans-serif; background: #faf9f6; color: #1a1c1a; }
+  .card-img { transition: transform 0.6s ease; }
+  .card-wrapper:hover .card-img { transform: scale(1.05); }
+  .tab-btn { transition: all 0.2s ease; }
+  .fade-in { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .road-badge { border: 2px solid #061b0e; box-shadow: 2px 2px 0px #061b0e; }
+  .detail-panel { animation: slideDown 0.3s ease; }
+  @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 1000px; } }
+  .toggle-btn { transition: all 0.25s ease; }
+  .must-badge { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #c3c8c1; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Sticky Header -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-bg/90 border-b border-pri/5">
+    <div class="max-w-5xl mx-auto flex items-center justify-between px-5 py-3">
+      <div class="font-serif text-sm tracking-[3px] uppercase text-pri font-normal">Sri Lanka 2026</div>
+      <div id="headerPill" class="bg-terF/60 px-3 py-1 rounded-full text-[10px] font-bold tracking-[2px] uppercase text-pri"></div>
+    </div>
+  </header>
+
+  <!-- Tab Nav -->
+  <nav class="sticky top-[52px] z-40 backdrop-blur-md bg-bg/92 border-b border-pri/5">
+    <div class="max-w-5xl mx-auto flex">
+      <button onclick="switchTab('explore')" id="tabExplore" class="tab-btn flex-1 py-3 text-[11px] font-bold tracking-[2px] uppercase border-b-2 border-ter text-pri bg-transparent">
+        🗺️ Explore
+      </button>
+      <button onclick="switchTab('trip')" id="tabTrip" class="tab-btn flex-1 py-3 text-[11px] font-bold tracking-[2px] uppercase border-b-2 border-transparent text-pri/30 bg-transparent">
+        📋 My Trip
+      </button>
+    </div>
+  </nav>
+
+  <!-- EXPLORE TAB -->
+  <div id="exploreView" class="max-w-5xl mx-auto px-5 pt-8 pb-20">
+    <!-- Hero -->
+    <div class="mb-8">
+      <div class="text-[10px] tracking-[6px] uppercase text-ter font-medium mb-1">Curated Journey • August 2026</div>
+      <h1 class="font-serif text-[clamp(32px,8vw,56px)] font-normal text-pri leading-[1.1]">
+        Sri Lanka <span class="italic opacity-40">2026</span>
+      </h1>
+      <div class="border-l-2 border-ter/30 pl-4 mt-4 max-w-sm">
+        <p class="text-[13px] text-onV font-light">3 Families • 6 Adults, 6 Kids (ages 3–9) • Pure Vegetarian</p>
+      </div>
+    </div>
+
+    <!-- August Weather -->
+    <div class="bg-terF/25 border border-ter/15 rounded-lg px-5 py-4 mb-7">
+      <div class="text-[10px] tracking-[3px] uppercase font-bold text-pri/50 mb-2">☀️ August Weather</div>
+      <div class="grid grid-cols-2 gap-1 text-xs font-light text-pri/65">
+        <span>☀️ <b class="font-semibold">East coast</b> = PEAK season</span>
+        <span>🌧️ <b class="font-semibold">West coast</b> = MONSOON!</span>
+        <span>🌫️ <b class="font-semibold">Hills</b> = 14-19°C, pack jackets</span>
+        <span>🐘 <b class="font-semibold">Kandy</b> = Perahera festival!</span>
+      </div>
+    </div>
+
+    <p class="text-[13px] text-onV font-light mb-5 leading-relaxed">
+      Tap any card for details & TripAdvisor links. Hit <span class="bg-sec text-white px-2 py-0.5 rounded text-[11px] font-bold">+</span> to add destinations.
+    </p>
+
+    <!-- Cards Grid -->
+    <div id="cardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"></div>
+  </div>
+
+  <!-- MY TRIP TAB -->
+  <div id="tripView" class="max-w-xl mx-auto px-5 pt-8 pb-20 hidden">
+    <div class="text-[10px] tracking-[3px] uppercase text-ter font-bold mb-1">August Expedition</div>
+    <h2 class="font-serif text-[28px] font-normal text-pri leading-tight mb-5">
+      Island Spirits & <span class="italic">Ancient Shores</span>
+    </h2>
+
+    <!-- Hotel Toggle -->
+    <div class="flex bg-srf p-1 rounded max-w-[280px] mb-7">
+      <button onclick="setHotelPref('mid')" id="toggleMid" class="toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-transparent text-onV/50">Mid-Range</button>
+      <button onclick="setHotelPref('premium')" id="togglePremium" class="toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-pri text-white">Premium</button>
+    </div>
+
+    <!-- Timeline -->
+    <div id="timeline" class="relative pl-11"></div>
+
+    <!-- Budget -->
+    <div id="budgetSection" class="mt-10"></div>
+
+    <!-- Need to Know -->
+    <div class="mt-8 p-5 bg-priC rounded-lg text-gray-300">
+      <h3 class="font-serif text-[15px] font-normal tracking-[3px] uppercase mb-4">Need to Know</h3>
+      <div class="grid gap-3 text-[13px] opacity-90 font-light leading-relaxed">
+        <div><b class="text-terF font-bold text-[10px] tracking-[2px] uppercase">Visa</b><br>ETA online ~$20/adult, kids free. Apply at eta.gov.lk</div>
+        <div><b class="text-terF font-bold text-[10px] tracking-[2px] uppercase">Dining</b><br>All families pure veg. Say "no fish, no egg, no Maldive fish"</div>
+        <div><b class="text-terF font-bold text-[10px] tracking-[2px] uppercase">Transport</b><br>Premium MPVs (Serena/Voxy). Book Ella train First Class in advance</div>
+        <div><b class="text-terF font-bold text-[10px] tracking-[2px] uppercase">August</b><br>East coast = peak sun. West coast = monsoon. Pack jackets for hills</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-7 bg-srf">
+    <div class="font-serif text-[15px] italic text-pri font-normal">Sri Lanka Family Trip Planner</div>
+    <div class="text-[9px] tracking-[4px] uppercase text-pri/25 mt-2">August 2026 ❤️ Share your picks in the group!</div>
+  </footer>
+</div>
+
+<script>
+// ===================== DATA =====================
+const DESTS = [
+  { id:"negombo", name:"Negombo", sub:"The Gateway Coast", nights:1, temp:"28-30°C", badge:"1 Night Transit", kids:3, veg:4, must:false,
+    img:"https://images.unsplash.com/photo-1586394536236-b74e44a30b74?w=800&q=80",
+    weather:"Warm, light showers. Just a rest stop.",
+    why:"15 min from airport. Rest instead of driving 5hrs with jetlagged toddlers.",
+    kAct:["Hotel pool after flight","Beach walk & fishing boats","Dutch Canal boat ride"],
+    aAct:["Morning fish market","Beach sunset dinner","Rest & recover"],
+    veg:"Earl's Regent has excellent veg — dal & aubergine praised as 'the best' by London visitors.",
+    hM:{n:"Earl's Regent ⭐⭐⭐⭐",p:"₹5–7K/night",l:"https://www.tripadvisor.com/Hotel_Review-g297896-d12095583-Reviews-Earl_s_Regent_Hotel-Negombo_Western_Province.html"},
+    hP:{n:"Heritance Negombo ⭐⭐⭐⭐⭐",p:"₹10–14K/night",l:"https://www.tripadvisor.com/Hotel_Review-g297896-d1168181-Reviews-Sentido_Heritance_Negombo-Negombo_Western_Province.html"},
+    ta:"https://www.tripadvisor.com/Tourism-g297896-Negombo_Western_Province-Vacations.html" },
+  { id:"kandy", name:"Kandy", sub:"The Sacred City", nights:2, temp:"24-28°C", badge:"2 Nights", kids:4, veg:4, must:false,
+    img:"https://images.unsplash.com/photo-1588598198321-9735fd510bee?w=800&q=80",
+    weather:"Pleasant. Esala Perahera — elephants & fire dancers!",
+    why:"Elephants = THE highlight for kids. Aug: grand Perahera procession!",
+    kAct:["🐘 Pinnawala — feed & bathe elephants!","🌺 Botanical Gardens — lawns to run","💃 Kandyan Dance show"],
+    aAct:["Temple of the Tooth","Kandy Lake walk","🎭 Esala Perahera (Aug!)","Tea Museum"],
+    veg:"Indian restaurants in city. Hotels serve North & South Indian veg food.",
+    hM:{n:"Mount Randholee ⭐⭐⭐⭐",p:"₹5–7K/night",l:"https://www.tripadvisor.com/Hotel_Review-g12220047-d1594031-Reviews-Mount_Randholee_Resorts_Spa-Heerassagala_Kandy_Kandy_District_Central_Province.html"},
+    hP:{n:"Earl's Regency ⭐⭐⭐⭐⭐",p:"₹10–14K/night",l:"https://www.tripadvisor.com/Hotel_Review-g304138-d305498-Reviews-Earls_Regency_Hotel-Kandy_Kandy_District_Central_Province.html"},
+    ta:"https://www.tripadvisor.com/Tourism-g304138-Kandy_Kandy_District_Central_Province-Vacations.html" },
+  { id:"nuwaraeliya", name:"Nuwara Eliya", sub:"The Misty Highlands", nights:3, temp:"14-19°C", badge:"3 Nights", kids:5, veg:4, must:true,
+    img:"https://images.unsplash.com/photo-1571406252241-db81455c8753?w=800&q=80",
+    weather:"Cool & misty. Pack jackets & rain gear. Mornings best.",
+    why:"THE must-visit. Tea country + Ella train = #1 Sri Lanka experience.",
+    kAct:["🚂 Ella scenic train — world's best!","🌉 Nine Arch Bridge — watch train cross!","🛶 Gregory Lake — boats & ponies","🌿 Tea factory tour","🌸 Hakgala Gardens — 28 acres"],
+    aAct:["Tea plantation walks","Ramboda Falls (100m!)","Seetha Amman Temple (Ramayana)","Hanuman Temple","High tea at Grand Hotel"],
+    veg:"Grand Hotel has 'Grand Indian' restaurant — paneer, dal, sabzi. Rice meals naturally veg.",
+    hM:{n:"Araliya Red ⭐⭐⭐⭐",p:"₹5–8K/night",l:"https://www.tripadvisor.com/Hotel_Review-g608524-d21002799-Reviews-Araliya_Red-Nuwara_Eliya_Central_Province.html"},
+    hP:{n:"The Grand Hotel (1828) ⭐⭐⭐⭐⭐",p:"₹12–18K/night",l:"https://www.tripadvisor.com/Hotel_Review-g608524-d479578-Reviews-The_Grand_Hotel-Nuwara_Eliya_Central_Province.html"},
+    ta:"https://www.tripadvisor.com/Tourism-g608524-Nuwara_Eliya_Central_Province-Vacations.html" },
+  { id:"trincomalee", name:"Trincomalee", sub:"Wild Eastern Sands", nights:3, temp:"32-35°C", badge:"3 Nights", kids:5, veg:3, must:true,
+    img:"https://images.unsplash.com/photo-1590080874088-270a94acdd0e?w=800&q=80",
+    weather:"PEAK SEASON ☀️ Hot, sunny, calm seas — toddler safe!",
+    why:"Aug = PEAK east coast. West coast = MONSOON. Calm seas = paradise.",
+    kAct:["🏊 Calm beach — toddler safe!","🤿 Pigeon Island glass-bottom boat","🦌 Fort Frederick — deer roam free!","🐢 Turtle hatchery","🐋 Whale watching (peak Aug!)"],
+    aAct:["Uppuveli & Nilaveli beaches","Koneswaram Temple (cliff-top)","Snorkeling Pigeon Island","Watch fishermen at dawn"],
+    veg:"Hotels serve veg buffets. Say 'no fish, no egg, no Maldive fish' — SL sneaks fish in.",
+    hM:{n:"Trinco Blu by Cinnamon ⭐⭐⭐⭐",p:"₹7–10K/night",l:"https://www.tripadvisor.com/Hotel_Review-g424963-d1775384-Reviews-Trinco_Blu_By_Cinnamon-Trincomalee_Eastern_Province.html"},
+    hP:{n:"Uga Jungle Beach ⭐⭐⭐⭐⭐",p:"₹15–22K/night",l:"https://www.tripadvisor.com/Hotel_Review-g424963-d1464982-Reviews-Uga_Jungle_Beach_Trincomalee-Trincomalee_Eastern_Province.html"},
+    ta:"https://www.tripadvisor.com/Tourism-g424963-Trincomalee_Eastern_Province-Vacations.html" },
+  { id:"colombo", name:"Colombo", sub:"The Grand Finale", nights:2, temp:"28-31°C", badge:"2 Nights Finale", kids:4, veg:5, must:false,
+    img:"https://images.unsplash.com/photo-1588428608725-95e4f22e8600?w=800&q=80",
+    weather:"Warm. Doesn't matter — 5-star with 3 pools, spa & kids club!",
+    why:"End in style! Kids club, spa, mall, pool, 12 restaurants. 45 min from airport.",
+    kAct:["🏊 3 pools incl. kids pool","🎮 Free kids club (ages 4-12)","🪁 Galle Face Green — kites & food","🛍️ Mall + cinema in hotel","🗼 Lotus Tower"],
+    aAct:["💆 World-class spa","🛍️ One Galle Face Mall — 200+ shops","🍷 Rooftop infinity pool bar","🍽️ 12 restaurants","🎭 City of Dreams entertainment"],
+    veg:"Best veg availability. Multiple Indian restaurants. 12 hotel restaurants with veg menus.",
+    hM:null,
+    hP:{n:"Cinnamon Life City of Dreams ⭐⭐⭐⭐⭐",p:"₹14–20K/night",l:"https://www.tripadvisor.com/Hotel_Review-g293962-d29019029-Reviews-Cinnamon_Life_City_of_Dreams-Colombo_Western_Province.html"},
+    ta:"https://www.tripadvisor.com/Tourism-g293962-Colombo_Western_Province-Vacations.html" }
+];
+
+const TRAVEL = {
+  "negombo-kandy":{t:"3.5 hrs",km:100,n:"Stop at Pinnawala Elephants en route"},
+  "negombo-nuwaraeliya":{t:"5.5 hrs",km:180,n:"Scenic climb. Pinnawala stop possible."},
+  "kandy-nuwaraeliya":{t:"2.5 hrs",km:85,n:"Ramboda Falls & Hanuman Temple en route"},
+  "nuwaraeliya-trincomalee":{t:"5.5 hrs",km:200,n:"Cross country through dry zone"},
+  "trincomalee-colombo":{t:"6 hrs",km:260,n:"Or take 1hr domestic flight!"},
+  "colombo-airport":{t:"45 min",km:30,n:"Quick expressway"},
+  "trincomalee-airport":{t:"6 hrs",km:250,n:"Leave by noon for evening flight"}
+};
+const ORDER = ["negombo","kandy","nuwaraeliya","trincomalee","colombo"];
+
+// ===================== STATE =====================
+let selected = ["negombo","nuwaraeliya","trincomalee"];
+let activeTab = "explore";
+let expandedCard = null;
+let hotelPref = "premium";
+
+// ===================== HELPERS =====================
+function getTravel(a, b) { return TRAVEL[a+"-"+b] || TRAVEL[b+"-"+a] || null; }
+function isSel(id) { return selected.includes(id); }
+function totalNights() { return DESTS.filter(d => isSel(d.id)).reduce((s, d) => s + d.nights, 0); }
+function getRoute() { return ORDER.filter(id => isSel(id)); }
+
+function getBudget() {
+  const hasC = isSel("colombo");
+  const tn = totalNights();
+  if (hotelPref === "premium") {
+    return { hotel: hasC ? "₹80K–1.3L" : "₹55–85K", total: hasC ? "₹2.8–4.0L" : "₹2.2–3.2L" };
+  }
+  return { hotel: hasC ? "₹55–85K" : "₹35–55K", total: hasC ? "₹2.2–3.0L" : "₹1.7–2.4L" };
+}
+
+// ===================== ACTIONS =====================
+function toggleDest(id) {
+  const d = DESTS.find(x => x.id === id);
+  if (d.must) return;
+  if (selected.includes(id)) {
+    selected = selected.filter(x => x !== id);
+  } else {
+    selected.push(id);
+  }
+  render();
+}
+
+function switchTab(t) {
+  activeTab = t;
+  render();
+}
+
+function toggleExpand(id) {
+  expandedCard = expandedCard === id ? null : id;
+  render();
+}
+
+function setHotelPref(p) {
+  hotelPref = p;
+  render();
+}
+
+// ===================== RENDER =====================
+function render() {
+  // Header pill
+  const tn = totalNights();
+  document.getElementById('headerPill').textContent = `${selected.length} stops • ${tn}N`;
+
+  // Tabs
+  const tabE = document.getElementById('tabExplore');
+  const tabT = document.getElementById('tabTrip');
+  if (activeTab === 'explore') {
+    tabE.className = 'tab-btn flex-1 py-3 text-[11px] font-bold tracking-[2px] uppercase border-b-2 border-ter text-pri bg-transparent';
+    tabT.className = 'tab-btn flex-1 py-3 text-[11px] font-bold tracking-[2px] uppercase border-b-2 border-transparent text-pri/30 bg-transparent';
+    document.getElementById('exploreView').classList.remove('hidden');
+    document.getElementById('tripView').classList.add('hidden');
+  } else {
+    tabT.className = 'tab-btn flex-1 py-3 text-[11px] font-bold tracking-[2px] uppercase border-b-2 border-ter text-pri bg-transparent';
+    tabE.className = 'tab-btn flex-1 py-3 text-[11px] font-bold tracking-[2px] uppercase border-b-2 border-transparent text-pri/30 bg-transparent';
+    document.getElementById('exploreView').classList.add('hidden');
+    document.getElementById('tripView').classList.remove('hidden');
+  }
+
+  renderCards();
+  renderTimeline();
+  renderBudget();
+  renderToggles();
+}
+
+function renderCards() {
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = DESTS.map(d => {
+    const on = isSel(d.id);
+    const open = expandedCard === d.id;
+    const h = hotelPref === "premium" ? d.hP : (d.hM || d.hP);
+
+    return `
+    <div class="card-wrapper">
+      <!-- Image Card -->
+      <div onclick="toggleExpand('${d.id}')" class="relative overflow-hidden rounded cursor-pointer" style="aspect-ratio:3/4; border: ${on ? '2px solid #735c00' : d.must ? '2px solid rgba(115,92,0,0.4)' : '1px solid rgba(6,27,14,0.06)'}">
+        <img src="${d.img}" alt="${d.name}" class="card-img w-full h-full object-cover" loading="lazy"
+          onerror="this.style.background='linear-gradient(135deg,#1b3022,#061b0e)'; this.style.objectFit='contain'">
+        <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(6,27,14,0.78) 0%,transparent 55%)"></div>
+
+        ${d.must ? `<div class="must-badge absolute top-3 left-3 bg-ter/90 text-white px-3 py-1 rounded-full text-[8px] font-semibold tracking-[3px] uppercase">★ Must Visit</div>` : ''}
+
+        <!-- + / ✓ Button -->
+        <div onclick="event.stopPropagation(); toggleDest('${d.id}')" class="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center text-white text-lg font-bold z-10 shadow-lg"
+          style="cursor:${d.must ? 'default' : 'pointer'}; background:${d.must ? 'rgba(115,92,0,0.9)' : on ? '#984629' : 'rgba(6,27,14,0.5)'}">
+          ${d.must || on ? '✓' : '+'}
+        </div>
+
+        <div class="absolute bottom-4 left-4 right-4 text-white">
+          <div class="flex gap-2 items-center mb-2">
+            <span class="bg-white/10 backdrop-blur-sm border border-white/20 px-2 py-0.5 text-[9px] font-medium tracking-[2px] uppercase">${d.badge}</span>
+            <span class="text-[10px] opacity-70">${d.temp}</span>
+          </div>
+          <h3 class="font-serif text-[28px] font-normal mb-1">${d.name}</h3>
+          <div class="flex gap-4 text-[9px] tracking-[2px] uppercase opacity-50">
+            <span>Kids ${d.kids}/5</span><span>Veg ${d.veg}/5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather & Why -->
+      <div class="mt-2 px-0.5">
+        <div class="text-[11px] text-ter font-medium">🌤️ ${d.weather}</div>
+        <div class="text-xs text-onV font-light mt-0.5">💡 ${d.why}</div>
+      </div>
+
+      <!-- Expanded Details -->
+      ${open ? `
+      <div class="detail-panel mt-3 bg-white p-5 rounded shadow-md">
+        <div class="mb-3">
+          <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-1">👶 Kids Activities</div>
+          ${d.kAct.map(a => `<p class="text-[13px] font-light text-onV leading-relaxed">${a}</p>`).join('')}
+        </div>
+        <div class="mb-3">
+          <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-1">👨‍👩‍👧 Adults</div>
+          ${d.aAct.map(a => `<p class="text-[13px] font-light text-onV leading-relaxed">${a}</p>`).join('')}
+        </div>
+        <div class="mb-3">
+          <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-1">🥬 Veg Food</div>
+          <p class="text-[13px] font-light text-onV leading-relaxed">${d.veg}</p>
+        </div>
+        <div class="border-t border-out/25 pt-3 mt-3">
+          <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-2">🏨 Hotels — tap for TripAdvisor</div>
+          ${d.hM ? `
+          <a href="${d.hM.l}" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center py-2 no-underline text-inherit hover:bg-srf/50 rounded px-1 -mx-1">
+            <div>
+              <div class="text-[9px] text-onV/40 font-bold uppercase tracking-[2px]">Mid-Range</div>
+              <div class="text-[13px] font-light">${d.hM.n}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[13px] font-bold text-ter">${d.hM.p}</div>
+              <div class="text-[9px] text-ter/50">TripAdvisor →</div>
+            </div>
+          </a>` : ''}
+          ${d.hP ? `
+          <a href="${d.hP.l}" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center py-2 no-underline text-inherit hover:bg-srf/50 rounded px-1 -mx-1">
+            <div>
+              <div class="text-[9px] text-onV/40 font-bold uppercase tracking-[2px]">Premium</div>
+              <div class="text-[13px] font-light">${d.hP.n}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-[13px] font-bold text-ter">${d.hP.p}</div>
+              <div class="text-[9px] text-ter/50">TripAdvisor →</div>
+            </div>
+          </a>` : ''}
+        </div>
+        <a href="${d.ta}" target="_blank" rel="noopener noreferrer" class="block text-center py-3 mt-3 bg-srf rounded text-[13px] font-medium text-pri no-underline hover:bg-srfH transition-colors">
+          📸 Photos & Reviews on TripAdvisor →
+        </a>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderTimeline() {
+  const container = document.getElementById('timeline');
+  const route = getRoute();
+  const hasC = isSel("colombo");
+  let html = '';
+
+  // Vertical line
+  html += '<div class="absolute left-5 top-3 bottom-3 w-px bg-priC/12"></div>';
+
+  // Departure
+  html += timelineStop(null, '✈️', 'Delhi → Colombo', 'Direct flight, 3.5 hrs • ~₹24K/person', null, null, true);
+
+  route.forEach((id, i) => {
+    const d = DESTS.find(x => x.id === id);
+    const tv = i === 0 ? (id === "negombo" ? {t:"15 min",km:10,n:"Quick from airport"} : getTravel("negombo", id)) : getTravel(route[i-1], id);
+    const h = hotelPref === "premium" ? d.hP : (d.hM || d.hP);
+
+    if (tv) html += roadBadge(tv);
+    html += timelineStop(d.sub, null, d.name + ' — ' + d.nights + 'N', d.kAct.slice(0,2).join(' • '), h, null, false);
+  });
+
+  // Return
+  const last = route[route.length - 1];
+  const tvReturn = last === "colombo" ? {t:"45 min",km:30,n:"Expressway"} : (getTravel(last,"airport") || {t:"6 hrs",km:250,n:"Leave by noon"});
+  html += roadBadge(tvReturn);
+  html += timelineStop(null, '✈️', 'Fly Home', 'Evening flight to Delhi', null, null, true);
+
+  container.innerHTML = html;
+}
+
+function timelineStop(subtitle, icon, title, sub, hotel, extra, isTerm) {
+  const dotSize = isTerm ? 'w-3 h-3' : 'w-1.5 h-1.5';
+  const dotColor = isTerm ? 'bg-ter shadow-[0_0_0_3px_#faf9f6]' : 'bg-pri';
+  const dotPos = isTerm ? '-left-[26px]' : '-left-[23px]';
+
+  return `
+  <div class="relative mb-5">
+    <div class="absolute ${dotPos} top-1 ${dotSize} rounded-full ${dotColor} z-10"></div>
+    ${subtitle ? `<div class="text-[10px] tracking-[2px] uppercase font-extrabold text-sec mb-1">${subtitle}</div>` : ''}
+    <div class="flex items-center gap-2 mb-1">
+      ${icon ? `<span class="text-[15px]">${icon}</span>` : ''}
+      <h3 class="font-serif ${isTerm ? 'text-base' : 'text-xl'} font-normal text-pri">${title}</h3>
+    </div>
+    ${!isTerm ? `
+    <div class="bg-white p-4 rounded shadow-sm">
+      <p class="text-[13px] font-light text-onV leading-relaxed mb-2">${sub}</p>
+      ${hotel ? `
+      <div class="border-t border-out/20 pt-2">
+        <div class="text-[9px] font-bold text-pri/20 uppercase tracking-[2px]">Residence</div>
+        <a href="${hotel.l}" target="_blank" rel="noopener noreferrer" class="no-underline">
+          <div class="font-serif text-sm font-normal italic text-pri">${hotel.n}</div>
+        </a>
+        <div class="text-xs font-bold text-ter">${hotel.p}</div>
+      </div>` : ''}
+    </div>` : `<p class="text-xs italic font-light text-onV">${sub}</p>`}
+  </div>`;
+}
+
+function roadBadge(tv) {
+  return `
+  <div class="mb-3.5">
+    <div class="road-badge inline-flex items-center gap-2 bg-terF px-3 py-1.5 rounded">
+      <span class="text-[13px]">🚗</span>
+      <span class="text-[9px] font-extrabold tracking-[3px] uppercase text-pri">${tv.t} (${tv.km} km)</span>
+    </div>
+    ${tv.n ? `<div class="text-[10px] text-onV/40 font-light mt-1 ml-1">${tv.n}</div>` : ''}
+  </div>`;
+}
+
+function renderBudget() {
+  const budget = getBudget();
+  const tn = totalNights();
+
+  document.getElementById('budgetSection').innerHTML = `
+  <h3 class="font-serif text-base font-normal text-center tracking-[4px] uppercase text-pri mb-4">Travel Investment</h3>
+  <div class="bg-srf rounded-lg overflow-hidden">
+    <div class="bg-pri text-white flex justify-between px-5 py-3">
+      <span class="text-[10px] tracking-[3px] uppercase font-bold">Category</span>
+      <span class="text-[10px] tracking-[3px] uppercase font-bold">Per Family</span>
+    </div>
+    <div class="divide-y divide-out/20">
+      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>✈️ Flights (4 pax)</span><span>₹80K–1L</span></div>
+      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>🏨 Hotels (${tn}N)</span><span>${budget.hotel}</span></div>
+      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>🚗 Transport</span><span>₹25–36K</span></div>
+      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>🍽️ Food & Activities</span><span>₹30–48K</span></div>
+    </div>
+    <div class="flex justify-between px-5 py-3.5 bg-srfH">
+      <span class="font-serif text-sm font-normal tracking-[3px] uppercase">Total Trip</span>
+      <span class="font-serif text-base font-bold text-ter">${budget.total}</span>
+    </div>
+  </div>`;
+}
+
+function renderToggles() {
+  const midBtn = document.getElementById('toggleMid');
+  const preBtn = document.getElementById('togglePremium');
+  if (hotelPref === 'premium') {
+    preBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-pri text-white';
+    midBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-transparent text-onV/50';
+  } else {
+    midBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-pri text-white';
+    preBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-transparent text-onV/50';
+  }
+}
+
+// Initial render
+render();
+</script>
+</body>
+</html>
