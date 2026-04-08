@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sri Lanka Family Trip Planner — August 2026</title>
 <meta name="description" content="Interactive trip planner for 3 Indian families visiting Sri Lanka in August 2026. Pure vegetarian, kid-friendly destinations.">
+<meta property="og:title" content="Sri Lanka Family Trip — August 2026">
+<meta property="og:description" content="3 families, 5 adults, 6 kids. Pure veg. Interactive planner with hotels, activities & budget.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -44,10 +46,14 @@ tailwind.config = {
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   .road-badge { border: 2px solid #061b0e; box-shadow: 2px 2px 0px #061b0e; }
   .detail-panel { animation: slideDown 0.3s ease; }
-  @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 1000px; } }
+  @keyframes slideDown { from { opacity: 0; max-height: 0; } to { opacity: 1; max-height: 2000px; } }
   .toggle-btn { transition: all 0.25s ease; }
   .must-badge { animation: pulse 2s infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+  .day-card { transition: all 0.2s ease; }
+  .day-card:hover { box-shadow: 0 8px 30px rgba(6,27,14,0.08); }
+  .whatsapp-btn { background: #25D366; transition: all 0.2s ease; }
+  .whatsapp-btn:hover { background: #1fb855; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #c3c8c1; border-radius: 3px; }
@@ -76,20 +82,18 @@ tailwind.config = {
     </div>
   </nav>
 
-  <!-- EXPLORE TAB -->
+  <!-- ============ EXPLORE TAB ============ -->
   <div id="exploreView" class="max-w-5xl mx-auto px-5 pt-8 pb-20">
-    <!-- Hero -->
     <div class="mb-8">
       <div class="text-[10px] tracking-[6px] uppercase text-ter font-medium mb-1">Curated Journey • August 2026</div>
       <h1 class="font-serif text-[clamp(32px,8vw,56px)] font-normal text-pri leading-[1.1]">
         Sri Lanka <span class="italic opacity-40">2026</span>
       </h1>
       <div class="border-l-2 border-ter/30 pl-4 mt-4 max-w-sm">
-        <p class="text-[13px] text-onV font-light">3 Families • 6 Adults, 6 Kids (ages 3–9) • Pure Vegetarian</p>
+        <p class="text-[13px] text-onV font-light">3 Families • 5 Adults, 6 Kids (ages 3–9) • Pure Vegetarian</p>
       </div>
     </div>
 
-    <!-- August Weather -->
     <div class="bg-terF/25 border border-ter/15 rounded-lg px-5 py-4 mb-7">
       <div class="text-[10px] tracking-[3px] uppercase font-bold text-pri/50 mb-2">☀️ August Weather</div>
       <div class="grid grid-cols-2 gap-1 text-xs font-light text-pri/65">
@@ -104,28 +108,29 @@ tailwind.config = {
       Tap any card for details & TripAdvisor links. Hit <span class="bg-sec text-white px-2 py-0.5 rounded text-[11px] font-bold">+</span> to add destinations.
     </p>
 
-    <!-- Cards Grid -->
     <div id="cardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7"></div>
   </div>
 
-  <!-- MY TRIP TAB -->
-  <div id="tripView" class="max-w-xl mx-auto px-5 pt-8 pb-20 hidden">
-    <div class="text-[10px] tracking-[3px] uppercase text-ter font-bold mb-1">August Expedition</div>
-    <h2 class="font-serif text-[28px] font-normal text-pri leading-tight mb-5">
-      Island Spirits & <span class="italic">Ancient Shores</span>
-    </h2>
+  <!-- ============ MY TRIP TAB ============ -->
+  <div id="tripView" class="max-w-2xl mx-auto px-5 pt-8 pb-20 hidden">
+
+    <!-- Quick Summary Card -->
+    <div id="summaryCard"></div>
 
     <!-- Hotel Toggle -->
-    <div class="flex bg-srf p-1 rounded max-w-[280px] mb-7">
-      <button onclick="setHotelPref('mid')" id="toggleMid" class="toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-transparent text-onV/50">Mid-Range</button>
-      <button onclick="setHotelPref('premium')" id="togglePremium" class="toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-pri text-white">Premium</button>
+    <div class="flex items-center justify-between mb-6">
+      <div class="text-[10px] tracking-[3px] uppercase font-bold text-pri/40">Hotel Preference</div>
+      <div class="flex bg-srf p-1 rounded">
+        <button onclick="setHotelPref('mid')" id="toggleMid" class="toggle-btn py-2 px-4 rounded text-[10px] font-bold tracking-[2px] uppercase bg-transparent text-onV/50">Mid-Range</button>
+        <button onclick="setHotelPref('premium')" id="togglePremium" class="toggle-btn py-2 px-4 rounded text-[10px] font-bold tracking-[2px] uppercase bg-pri text-white">Premium</button>
+      </div>
     </div>
 
-    <!-- Timeline -->
-    <div id="timeline" class="relative pl-11"></div>
+    <!-- Day-by-Day Itinerary -->
+    <div id="dayByDay"></div>
 
     <!-- Budget -->
-    <div id="budgetSection" class="mt-10"></div>
+    <div id="budgetSection" class="mt-8"></div>
 
     <!-- Need to Know -->
     <div class="mt-8 p-5 bg-priC rounded-lg text-gray-300">
@@ -136,6 +141,14 @@ tailwind.config = {
         <div><b class="text-terF font-bold text-[10px] tracking-[2px] uppercase">Transport</b><br>Premium MPVs (Serena/Voxy). Book Ella train First Class in advance</div>
         <div><b class="text-terF font-bold text-[10px] tracking-[2px] uppercase">August</b><br>East coast = peak sun. West coast = monsoon. Pack jackets for hills</div>
       </div>
+    </div>
+
+    <!-- WhatsApp Share -->
+    <div class="mt-8">
+      <button onclick="shareWhatsApp()" class="whatsapp-btn w-full py-4 rounded-lg text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Share Trip Plan on WhatsApp
+      </button>
     </div>
   </div>
 
@@ -226,11 +239,75 @@ function getRoute() { return ORDER.filter(id => isSel(id)); }
 
 function getBudget() {
   const hasC = isSel("colombo");
-  const tn = totalNights();
   if (hotelPref === "premium") {
     return { hotel: hasC ? "₹80K–1.3L" : "₹55–85K", total: hasC ? "₹2.8–4.0L" : "₹2.2–3.2L" };
   }
   return { hotel: hasC ? "₹55–85K" : "₹35–55K", total: hasC ? "₹2.2–3.0L" : "₹1.7–2.4L" };
+}
+
+// Build day-by-day data from selected destinations
+function buildDays() {
+  const route = getRoute();
+  const days = [];
+  let dayNum = 1;
+
+  // Day 1: Arrival
+  days.push({ dayNum: dayNum, type: 'flight', title: 'Fly Delhi → Colombo', detail: 'Direct flight ~3.5 hrs. Land at Bandaranaike Airport.', temp: '', icon: '✈️' });
+
+  route.forEach((id, i) => {
+    const d = DESTS.find(x => x.id === id);
+    const h = hotelPref === "premium" ? d.hP : (d.hM || d.hP);
+
+    // Travel day (drive from previous)
+    let travelNote = '';
+    if (i === 0) {
+      if (id === 'negombo') {
+        travelNote = '15 min drive from airport';
+      } else {
+        const tv = getTravel('negombo', id);
+        if (tv) travelNote = tv.t + ' drive from airport (' + tv.km + ' km) — ' + tv.n;
+      }
+    } else {
+      const tv = getTravel(route[i-1], id);
+      if (tv) travelNote = tv.t + ' drive from ' + DESTS.find(x=>x.id===route[i-1]).name + ' (' + tv.km + ' km) — ' + tv.n;
+    }
+
+    // First day at this destination (arrival day — includes drive)
+    days.push({
+      dayNum: dayNum,
+      type: 'destination',
+      cityId: id,
+      name: d.name,
+      sub: d.sub,
+      temp: d.temp,
+      nightLabel: 'Night ' + dayNum + (d.nights > 1 ? '–' + (dayNum + d.nights - 1) : ''),
+      nights: d.nights,
+      travel: travelNote,
+      hotel: h,
+      kAct: d.kAct,
+      aAct: d.aAct,
+      veg: d.veg,
+      weather: d.weather,
+      must: d.must,
+      ta: d.ta
+    });
+
+    dayNum += d.nights;
+  });
+
+  // Last day: Fly home
+  const last = route[route.length - 1];
+  const lastDest = DESTS.find(x => x.id === last);
+  let returnTravel = '';
+  if (last === 'colombo') {
+    returnTravel = '45 min drive to airport (Expressway)';
+  } else {
+    const tv = getTravel(last, 'airport') || { t: '6 hrs', km: 250, n: 'Leave by noon' };
+    returnTravel = tv.t + ' drive to airport (' + tv.km + ' km) — ' + tv.n;
+  }
+  days.push({ dayNum: dayNum, type: 'flight', title: 'Fly Home', detail: returnTravel + '. Evening flight to Delhi.', temp: '', icon: '✈️' });
+
+  return days;
 }
 
 // ===================== ACTIONS =====================
@@ -260,13 +337,55 @@ function setHotelPref(p) {
   render();
 }
 
+function shareWhatsApp() {
+  const route = getRoute();
+  const tn = totalNights();
+  const budget = getBudget();
+  const days = buildDays();
+
+  let msg = '🌴 *SRI LANKA FAMILY TRIP — AUGUST 2026*\n';
+  msg += '━━━━━━━━━━━━━━━━━━━━━━\n';
+  msg += '👨‍👩‍👧‍👦 3 Families | 5 Adults + 6 Kids\n';
+  msg += '🗓️ ' + tn + ' Nights | ' + route.length + ' Cities\n';
+  msg += '🥬 Pure Vegetarian\n\n';
+
+  msg += '📍 *ROUTE:*\n';
+  let dayCounter = 1;
+  route.forEach((id, i) => {
+    const d = DESTS.find(x => x.id === id);
+    const h = hotelPref === "premium" ? d.hP : (d.hM || d.hP);
+    const dayRange = d.nights === 1 ? 'Day ' + dayCounter : 'Day ' + dayCounter + '–' + (dayCounter + d.nights - 1);
+    msg += '\n' + (d.must ? '⭐' : '📌') + ' *' + d.name + '* — ' + d.nights + 'N (' + dayRange + ')\n';
+    msg += '   🌡️ ' + d.temp + ' | ' + d.weather + '\n';
+    msg += '   🏨 ' + h.n + ' (' + h.p + ')\n';
+    msg += '   👶 ' + d.kAct.slice(0, 2).join(', ') + '\n';
+    if (i < route.length - 1) {
+      const tv = getTravel(id, route[i+1]);
+      if (tv) msg += '   🚗 → ' + tv.t + ' drive to ' + DESTS.find(x=>x.id===route[i+1]).name + '\n';
+    }
+    dayCounter += d.nights;
+  });
+
+  msg += '\n💰 *BUDGET PER FAMILY:*\n';
+  msg += '   ✈️ Flights: ₹80K–1L\n';
+  msg += '   🏨 Hotels (' + tn + 'N): ' + budget.hotel + '\n';
+  msg += '   🚗 Transport: ₹25–36K\n';
+  msg += '   🍽️ Food & Activities: ₹30–48K\n';
+  msg += '   *TOTAL: ' + budget.total + ' per family*\n\n';
+
+  msg += '👉 Interactive planner: ' + window.location.href + '\n';
+  msg += '(Tap destinations to add/remove & see full details!)\n\n';
+  msg += '🙏 Check it out & share your preferences!';
+
+  const url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+}
+
 // ===================== RENDER =====================
 function render() {
-  // Header pill
   const tn = totalNights();
-  document.getElementById('headerPill').textContent = `${selected.length} stops • ${tn}N`;
+  document.getElementById('headerPill').textContent = selected.length + ' stops • ' + tn + 'N';
 
-  // Tabs
   const tabE = document.getElementById('tabExplore');
   const tabT = document.getElementById('tabTrip');
   if (activeTab === 'explore') {
@@ -282,7 +401,8 @@ function render() {
   }
 
   renderCards();
-  renderTimeline();
+  renderSummaryCard();
+  renderDayByDay();
   renderBudget();
   renderToggles();
 }
@@ -292,24 +412,17 @@ function renderCards() {
   grid.innerHTML = DESTS.map(d => {
     const on = isSel(d.id);
     const open = expandedCard === d.id;
-    const h = hotelPref === "premium" ? d.hP : (d.hM || d.hP);
-
     return `
     <div class="card-wrapper">
-      <!-- Image Card -->
       <div onclick="toggleExpand('${d.id}')" class="relative overflow-hidden rounded cursor-pointer" style="aspect-ratio:3/4; border: ${on ? '2px solid #735c00' : d.must ? '2px solid rgba(115,92,0,0.4)' : '1px solid rgba(6,27,14,0.06)'}">
         <img src="${d.img}" alt="${d.name}" class="card-img w-full h-full object-cover" loading="lazy"
           onerror="this.style.background='linear-gradient(135deg,#1b3022,#061b0e)'; this.style.objectFit='contain'">
         <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(6,27,14,0.78) 0%,transparent 55%)"></div>
-
-        ${d.must ? `<div class="must-badge absolute top-3 left-3 bg-ter/90 text-white px-3 py-1 rounded-full text-[8px] font-semibold tracking-[3px] uppercase">★ Must Visit</div>` : ''}
-
-        <!-- + / ✓ Button -->
+        ${d.must ? '<div class="must-badge absolute top-3 left-3 bg-ter/90 text-white px-3 py-1 rounded-full text-[8px] font-semibold tracking-[3px] uppercase">★ Must Visit</div>' : ''}
         <div onclick="event.stopPropagation(); toggleDest('${d.id}')" class="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center text-white text-lg font-bold z-10 shadow-lg"
           style="cursor:${d.must ? 'default' : 'pointer'}; background:${d.must ? 'rgba(115,92,0,0.9)' : on ? '#984629' : 'rgba(6,27,14,0.5)'}">
           ${d.must || on ? '✓' : '+'}
         </div>
-
         <div class="absolute bottom-4 left-4 right-4 text-white">
           <div class="flex gap-2 items-center mb-2">
             <span class="bg-white/10 backdrop-blur-sm border border-white/20 px-2 py-0.5 text-[9px] font-medium tracking-[2px] uppercase">${d.badge}</span>
@@ -321,23 +434,19 @@ function renderCards() {
           </div>
         </div>
       </div>
-
-      <!-- Weather & Why -->
       <div class="mt-2 px-0.5">
         <div class="text-[11px] text-ter font-medium">🌤️ ${d.weather}</div>
         <div class="text-xs text-onV font-light mt-0.5">💡 ${d.why}</div>
       </div>
-
-      <!-- Expanded Details -->
       ${open ? `
       <div class="detail-panel mt-3 bg-white p-5 rounded shadow-md">
         <div class="mb-3">
           <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-1">👶 Kids Activities</div>
-          ${d.kAct.map(a => `<p class="text-[13px] font-light text-onV leading-relaxed">${a}</p>`).join('')}
+          ${d.kAct.map(a => '<p class="text-[13px] font-light text-onV leading-relaxed">'+a+'</p>').join('')}
         </div>
         <div class="mb-3">
           <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-1">👨‍👩‍👧 Adults</div>
-          ${d.aAct.map(a => `<p class="text-[13px] font-light text-onV leading-relaxed">${a}</p>`).join('')}
+          ${d.aAct.map(a => '<p class="text-[13px] font-light text-onV leading-relaxed">'+a+'</p>').join('')}
         </div>
         <div class="mb-3">
           <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-1">🥬 Veg Food</div>
@@ -345,27 +454,13 @@ function renderCards() {
         </div>
         <div class="border-t border-out/25 pt-3 mt-3">
           <div class="text-[9px] tracking-[3px] uppercase font-semibold text-ter/50 mb-2">🏨 Hotels — tap for TripAdvisor</div>
-          ${d.hM ? `
-          <a href="${d.hM.l}" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center py-2 no-underline text-inherit hover:bg-srf/50 rounded px-1 -mx-1">
-            <div>
-              <div class="text-[9px] text-onV/40 font-bold uppercase tracking-[2px]">Mid-Range</div>
-              <div class="text-[13px] font-light">${d.hM.n}</div>
-            </div>
-            <div class="text-right">
-              <div class="text-[13px] font-bold text-ter">${d.hM.p}</div>
-              <div class="text-[9px] text-ter/50">TripAdvisor →</div>
-            </div>
+          ${d.hM ? `<a href="${d.hM.l}" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center py-2 no-underline text-inherit hover:bg-srf/50 rounded px-1 -mx-1">
+            <div><div class="text-[9px] text-onV/40 font-bold uppercase tracking-[2px]">Mid-Range</div><div class="text-[13px] font-light">${d.hM.n}</div></div>
+            <div class="text-right"><div class="text-[13px] font-bold text-ter">${d.hM.p}</div><div class="text-[9px] text-ter/50">TripAdvisor →</div></div>
           </a>` : ''}
-          ${d.hP ? `
-          <a href="${d.hP.l}" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center py-2 no-underline text-inherit hover:bg-srf/50 rounded px-1 -mx-1">
-            <div>
-              <div class="text-[9px] text-onV/40 font-bold uppercase tracking-[2px]">Premium</div>
-              <div class="text-[13px] font-light">${d.hP.n}</div>
-            </div>
-            <div class="text-right">
-              <div class="text-[13px] font-bold text-ter">${d.hP.p}</div>
-              <div class="text-[9px] text-ter/50">TripAdvisor →</div>
-            </div>
+          ${d.hP ? `<a href="${d.hP.l}" target="_blank" rel="noopener noreferrer" class="flex justify-between items-center py-2 no-underline text-inherit hover:bg-srf/50 rounded px-1 -mx-1">
+            <div><div class="text-[9px] text-onV/40 font-bold uppercase tracking-[2px]">Premium</div><div class="text-[13px] font-light">${d.hP.n}</div></div>
+            <div class="text-right"><div class="text-[13px] font-bold text-ter">${d.hP.p}</div><div class="text-[9px] text-ter/50">TripAdvisor →</div></div>
           </a>` : ''}
         </div>
         <a href="${d.ta}" target="_blank" rel="noopener noreferrer" class="block text-center py-3 mt-3 bg-srf rounded text-[13px] font-medium text-pri no-underline hover:bg-srfH transition-colors">
@@ -376,73 +471,143 @@ function renderCards() {
   }).join('');
 }
 
-function renderTimeline() {
-  const container = document.getElementById('timeline');
+function renderSummaryCard() {
   const route = getRoute();
-  const hasC = isSel("colombo");
-  let html = '';
+  const tn = totalNights();
+  const budget = getBudget();
 
-  // Vertical line
-  html += '<div class="absolute left-5 top-3 bottom-3 w-px bg-priC/12"></div>';
-
-  // Departure
-  html += timelineStop(null, '✈️', 'Delhi → Colombo', 'Direct flight, 3.5 hrs • ~₹24K/person', null, null, true);
-
-  route.forEach((id, i) => {
+  const routeNames = route.map(id => {
     const d = DESTS.find(x => x.id === id);
-    const tv = i === 0 ? (id === "negombo" ? {t:"15 min",km:10,n:"Quick from airport"} : getTravel("negombo", id)) : getTravel(route[i-1], id);
-    const h = hotelPref === "premium" ? d.hP : (d.hM || d.hP);
-
-    if (tv) html += roadBadge(tv);
-    html += timelineStop(d.sub, null, d.name + ' — ' + d.nights + 'N', d.kAct.slice(0,2).join(' • '), h, null, false);
+    return d.name + ' (' + d.nights + 'N)';
   });
 
-  // Return
-  const last = route[route.length - 1];
-  const tvReturn = last === "colombo" ? {t:"45 min",km:30,n:"Expressway"} : (getTravel(last,"airport") || {t:"6 hrs",km:250,n:"Leave by noon"});
-  html += roadBadge(tvReturn);
-  html += timelineStop(null, '✈️', 'Fly Home', 'Evening flight to Delhi', null, null, true);
-
-  container.innerHTML = html;
-}
-
-function timelineStop(subtitle, icon, title, sub, hotel, extra, isTerm) {
-  const dotSize = isTerm ? 'w-3 h-3' : 'w-1.5 h-1.5';
-  const dotColor = isTerm ? 'bg-ter shadow-[0_0_0_3px_#faf9f6]' : 'bg-pri';
-  const dotPos = isTerm ? '-left-[26px]' : '-left-[23px]';
-
-  return `
-  <div class="relative mb-5">
-    <div class="absolute ${dotPos} top-1 ${dotSize} rounded-full ${dotColor} z-10"></div>
-    ${subtitle ? `<div class="text-[10px] tracking-[2px] uppercase font-extrabold text-sec mb-1">${subtitle}</div>` : ''}
-    <div class="flex items-center gap-2 mb-1">
-      ${icon ? `<span class="text-[15px]">${icon}</span>` : ''}
-      <h3 class="font-serif ${isTerm ? 'text-base' : 'text-xl'} font-normal text-pri">${title}</h3>
+  document.getElementById('summaryCard').innerHTML = `
+  <div class="bg-pri text-white rounded-xl p-6 mb-7">
+    <div class="flex items-start justify-between mb-4">
+      <div>
+        <div class="text-[10px] tracking-[4px] uppercase text-terF font-bold mb-1">Your Trip at a Glance</div>
+        <h2 class="font-serif text-2xl font-normal">August 2026</h2>
+      </div>
+      <div class="text-right">
+        <div class="text-3xl font-bold text-terF">${tn}N</div>
+        <div class="text-[10px] tracking-[2px] uppercase text-white/50">${tn + 1} Days</div>
+      </div>
     </div>
-    ${!isTerm ? `
-    <div class="bg-white p-4 rounded shadow-sm">
-      <p class="text-[13px] font-light text-onV leading-relaxed mb-2">${sub}</p>
-      ${hotel ? `
-      <div class="border-t border-out/20 pt-2">
-        <div class="text-[9px] font-bold text-pri/20 uppercase tracking-[2px]">Residence</div>
-        <a href="${hotel.l}" target="_blank" rel="noopener noreferrer" class="no-underline">
-          <div class="font-serif text-sm font-normal italic text-pri">${hotel.n}</div>
-        </a>
-        <div class="text-xs font-bold text-ter">${hotel.p}</div>
-      </div>` : ''}
-    </div>` : `<p class="text-xs italic font-light text-onV">${sub}</p>`}
+
+    <div class="grid grid-cols-3 gap-3 mb-4">
+      <div class="bg-white/10 rounded-lg p-3 text-center">
+        <div class="text-lg font-bold">5</div>
+        <div class="text-[9px] tracking-[2px] uppercase text-white/60">Adults</div>
+      </div>
+      <div class="bg-white/10 rounded-lg p-3 text-center">
+        <div class="text-lg font-bold">6</div>
+        <div class="text-[9px] tracking-[2px] uppercase text-white/60">Kids</div>
+      </div>
+      <div class="bg-white/10 rounded-lg p-3 text-center">
+        <div class="text-lg font-bold text-terF">${budget.total}</div>
+        <div class="text-[9px] tracking-[2px] uppercase text-white/60">Per Family</div>
+      </div>
+    </div>
+
+    <div class="bg-white/10 rounded-lg p-3">
+      <div class="text-[9px] tracking-[2px] uppercase text-white/50 mb-2">Route</div>
+      <div class="flex items-center gap-1 flex-wrap text-sm">
+        <span class="text-terF">Delhi</span>
+        ${routeNames.map(n => '<span class="text-white/30">→</span><span>' + n + '</span>').join('')}
+        <span class="text-white/30">→</span>
+        <span class="text-terF">Delhi</span>
+      </div>
+    </div>
+
+    <div class="mt-3 text-[11px] text-white/40 text-center">🥬 Pure Vegetarian • 🎒 3 Families Together</div>
   </div>`;
 }
 
-function roadBadge(tv) {
-  return `
-  <div class="mb-3.5">
-    <div class="road-badge inline-flex items-center gap-2 bg-terF px-3 py-1.5 rounded">
-      <span class="text-[13px]">🚗</span>
-      <span class="text-[9px] font-extrabold tracking-[3px] uppercase text-pri">${tv.t} (${tv.km} km)</span>
-    </div>
-    ${tv.n ? `<div class="text-[10px] text-onV/40 font-light mt-1 ml-1">${tv.n}</div>` : ''}
-  </div>`;
+function renderDayByDay() {
+  const days = buildDays();
+  let html = '<div class="text-[10px] tracking-[3px] uppercase font-bold text-pri/40 mb-4">Day-by-Day Itinerary</div>';
+
+  days.forEach(day => {
+    if (day.type === 'flight') {
+      html += `
+      <div class="day-card bg-priC text-white rounded-xl p-5 mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-terF/20 flex items-center justify-center text-2xl">${day.icon}</div>
+          <div>
+            <div class="text-[10px] tracking-[2px] uppercase text-terF font-bold">Day ${day.dayNum}</div>
+            <div class="font-serif text-lg">${day.title}</div>
+            <div class="text-sm font-light text-white/70 mt-1">${day.detail}</div>
+          </div>
+        </div>
+      </div>`;
+    } else {
+      const d = day;
+      const dayEnd = d.dayNum + d.nights - 1;
+      const dayLabel = d.nights === 1 ? 'Day ' + d.dayNum : 'Day ' + d.dayNum + ' – ' + dayEnd;
+
+      html += `
+      <div class="day-card bg-white rounded-xl overflow-hidden mb-4 border border-pri/5">
+        <!-- City Header -->
+        <div class="p-5 pb-3">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-[10px] tracking-[2px] uppercase font-bold ${d.must ? 'text-ter' : 'text-sec'}">${dayLabel} ${d.must ? '• ⭐ Must Visit' : ''}</div>
+              <h3 class="font-serif text-xl text-pri mt-1">${d.name}</h3>
+              <div class="text-[11px] text-onV/50 italic">${d.sub}</div>
+            </div>
+            <div class="text-right">
+              <div class="bg-terF/40 px-3 py-1 rounded-full text-[10px] font-bold text-pri">${d.nights}N</div>
+              <div class="text-[11px] text-onV/50 mt-1">🌡️ ${d.temp}</div>
+            </div>
+          </div>
+
+          ${d.travel ? `
+          <div class="mt-3 flex items-center gap-2">
+            <div class="road-badge inline-flex items-center gap-1.5 bg-terF px-2.5 py-1 rounded text-[9px] font-extrabold tracking-[2px] uppercase text-pri">
+              🚗 ${d.travel.split('—')[0].trim()}
+            </div>
+            ${d.travel.includes('—') ? '<div class="text-[10px] text-onV/40 font-light">' + d.travel.split('—')[1].trim() + '</div>' : ''}
+          </div>` : ''}
+
+          <div class="mt-3 text-[11px] text-ter font-medium">🌤️ ${d.weather}</div>
+        </div>
+
+        <!-- Activities Grid -->
+        <div class="grid grid-cols-2 gap-0 border-t border-pri/5">
+          <!-- Kids -->
+          <div class="p-4 border-r border-pri/5">
+            <div class="text-[9px] tracking-[3px] uppercase font-bold text-sec/60 mb-2">👶 For Kids</div>
+            ${d.kAct.map(a => '<div class="text-[12px] font-light text-onV leading-relaxed mb-1">' + a + '</div>').join('')}
+          </div>
+          <!-- Adults -->
+          <div class="p-4">
+            <div class="text-[9px] tracking-[3px] uppercase font-bold text-ter/60 mb-2">🧑 For Adults</div>
+            ${d.aAct.map(a => '<div class="text-[12px] font-light text-onV leading-relaxed mb-1">' + a + '</div>').join('')}
+          </div>
+        </div>
+
+        <!-- Hotel + Food -->
+        <div class="border-t border-pri/5 p-4">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <div class="text-[9px] tracking-[3px] uppercase font-bold text-pri/30 mb-1">🏨 Hotel</div>
+              ${d.hotel ? `
+              <a href="${d.hotel.l}" target="_blank" rel="noopener noreferrer" class="no-underline group">
+                <div class="font-serif text-[13px] text-pri group-hover:text-ter transition-colors">${d.hotel.n}</div>
+                <div class="text-xs font-bold text-ter">${d.hotel.p} <span class="text-[9px] font-normal text-onV/30">TripAdvisor →</span></div>
+              </a>` : '<div class="text-[12px] text-onV/50 italic">Premium only for this city</div>'}
+            </div>
+            <div class="flex-1">
+              <div class="text-[9px] tracking-[3px] uppercase font-bold text-pri/30 mb-1">🥬 Veg Food</div>
+              <div class="text-[12px] font-light text-onV leading-relaxed">${d.veg}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+  });
+
+  document.getElementById('dayByDay').innerHTML = html;
 }
 
 function renderBudget() {
@@ -450,21 +615,29 @@ function renderBudget() {
   const tn = totalNights();
 
   document.getElementById('budgetSection').innerHTML = `
-  <h3 class="font-serif text-base font-normal text-center tracking-[4px] uppercase text-pri mb-4">Travel Investment</h3>
-  <div class="bg-srf rounded-lg overflow-hidden">
-    <div class="bg-pri text-white flex justify-between px-5 py-3">
-      <span class="text-[10px] tracking-[3px] uppercase font-bold">Category</span>
-      <span class="text-[10px] tracking-[3px] uppercase font-bold">Per Family</span>
+  <div class="text-[10px] tracking-[3px] uppercase font-bold text-pri/40 mb-3">Budget Estimate (Per Family)</div>
+  <div class="bg-white rounded-xl overflow-hidden border border-pri/5">
+    <div class="divide-y divide-pri/5">
+      <div class="flex justify-between px-5 py-3.5">
+        <span class="text-sm text-onV">✈️ Flights (Delhi↔Colombo)</span>
+        <span class="text-sm font-semibold text-pri">₹80K–1L</span>
+      </div>
+      <div class="flex justify-between px-5 py-3.5">
+        <span class="text-sm text-onV">🏨 Hotels (${tn} nights)</span>
+        <span class="text-sm font-semibold text-pri">${budget.hotel}</span>
+      </div>
+      <div class="flex justify-between px-5 py-3.5">
+        <span class="text-sm text-onV">🚗 Transport (MPV + drivers)</span>
+        <span class="text-sm font-semibold text-pri">₹25–36K</span>
+      </div>
+      <div class="flex justify-between px-5 py-3.5">
+        <span class="text-sm text-onV">🍽️ Food & Activities</span>
+        <span class="text-sm font-semibold text-pri">₹30–48K</span>
+      </div>
     </div>
-    <div class="divide-y divide-out/20">
-      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>✈️ Flights (4 pax)</span><span>₹80K–1L</span></div>
-      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>🏨 Hotels (${tn}N)</span><span>${budget.hotel}</span></div>
-      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>🚗 Transport</span><span>₹25–36K</span></div>
-      <div class="flex justify-between px-5 py-3 text-sm font-light"><span>🍽️ Food & Activities</span><span>₹30–48K</span></div>
-    </div>
-    <div class="flex justify-between px-5 py-3.5 bg-srfH">
-      <span class="font-serif text-sm font-normal tracking-[3px] uppercase">Total Trip</span>
-      <span class="font-serif text-base font-bold text-ter">${budget.total}</span>
+    <div class="bg-pri text-white flex justify-between items-center px-5 py-4">
+      <span class="font-serif text-sm tracking-[2px] uppercase">Total per Family</span>
+      <span class="font-serif text-xl font-bold text-terF">${budget.total}</span>
     </div>
   </div>`;
 }
@@ -473,11 +646,11 @@ function renderToggles() {
   const midBtn = document.getElementById('toggleMid');
   const preBtn = document.getElementById('togglePremium');
   if (hotelPref === 'premium') {
-    preBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-pri text-white';
-    midBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-transparent text-onV/50';
+    preBtn.className = 'toggle-btn py-2 px-4 rounded text-[10px] font-bold tracking-[2px] uppercase bg-pri text-white';
+    midBtn.className = 'toggle-btn py-2 px-4 rounded text-[10px] font-bold tracking-[2px] uppercase bg-transparent text-onV/50';
   } else {
-    midBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-pri text-white';
-    preBtn.className = 'toggle-btn flex-1 py-2 px-3 rounded text-[10px] font-bold tracking-[3px] uppercase bg-transparent text-onV/50';
+    midBtn.className = 'toggle-btn py-2 px-4 rounded text-[10px] font-bold tracking-[2px] uppercase bg-pri text-white';
+    preBtn.className = 'toggle-btn py-2 px-4 rounded text-[10px] font-bold tracking-[2px] uppercase bg-transparent text-onV/50';
   }
 }
 
